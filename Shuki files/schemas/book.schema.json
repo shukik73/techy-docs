@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenClaw Book Distillation",
+  "type": "object",
+  "properties": {
+    "book_id": { "type": "string" },
+    "title": { "type": "string" },
+    "author": { "type": "string" },
+    "domain": { "type": "string", "enum": ["execution", "strategy", "psychology", "finance", "leadership", "operations", "marketing", "negotiation"] },
+    "core_thesis": { "type": "string", "maxLength": 200 },
+    "principles": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 5,
+      "maxItems": 15
+    },
+    "decision_heuristics": {
+      "type": "array",
+      "items": { "type": "string" },
+      "maxItems": 5
+    },
+    "anti_patterns": {
+      "type": "array",
+      "items": { "type": "string" },
+      "maxItems": 5,
+      "description": "Failure warnings from the book"
+    },
+    "applicability_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "How relevant to current North Star"
+    },
+    "contradicts_existing_principle": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, requires explicit conflict resolution before integration"
+    },
+    "leverage_type": {
+      "type": "string",
+      "enum": ["time", "margin", "risk", "focus", "throughput"],
+      "description": "Primary leverage category this book improves"
+    },
+    "strategic_gap_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Computed: (bottleneck×0.5) + (northStarGap×0.3) + (failurePattern×0.2)"
+    },
+    "integrated": { "type": "boolean", "default": false },
+    "integration_date": { "type": ["string", "null"], "format": "date" },
+    "stabilization_expires": { "type": ["string", "null"], "format": "date" },
+    "distilled_ts": { "type": "string", "format": "date-time" },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "tokens_used": { "type": "integer" },
+        "usd_est": { "type": "number" }
+      }
+    }
+  },
+  "required": ["book_id", "title", "author", "domain", "core_thesis", "principles", "applicability_score"]
+}

@@ -1,0 +1,1489 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2868
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Intro\
+0:00\
+I'm going to show you exactly how I'm\
+0:02\
+using OpenClaw. I have spent countless\
+0:05\
+hours over the last few weeks exploring\
+0:07\
+every nook and cranny of what is\
+0:10\
+possible with OpenClaw. I truly believe\
+0:13\
+I am one of the most advanced users of\
+0:16\
+OpenClaw on the planet. And I'm going to\
+0:19\
+show you everything that I've learned.\
+0:21\
+And it all starts right here. This is a\
+0:24\
+fresh MacBook Air. I wiped it clean and\
+0:27\
+I installed OpenClaw on it. This thing\
+0:30\
+lives right on my desk. I have it in\
+0:33\
+clamshell mode. So when I close it, it\
+0:35\
+does not shut off. It is running 24\
+0:37\
+hours a day, connected to the internet.\
+0:39\
+And I make it easily available anywhere.\
+0:41\
+I installed team viewer on it so that if\
+0:44\
+I'm remote and something happens and I\
+0:46\
+need to change something directly on the\
+0:48\
+computer, I just team viewer into it and\
+0:49\
+I can do that. I also set up tail scale\
+0:52\
+so I can easily SSH into it. So if I\
+0:55\
+want to code something with cursor on\
+0:57\
+it, I can SSH in from any other computer\
+1:00\
+and that one just sits on my desk. Here\
+Overview\
+1:03\
+is the high-level overview of everything\
+1:06\
+going on in my system. And I know it\
+1:08\
+looks complicated. I'm going to get into\
+1:10\
+detail about all of it. All right, so\
+1:12\
+here is the overview. First, we have the\
+1:14\
+interfaces. This is how I'm actually\
+1:16\
+talking to my openclaw. I use Telegram\
+1:19\
+as the primary one. And if you watched\
+1:21\
+my previous video, you know I'm using\
+1:23\
+Telegram groups. I have a bunch of\
+1:25\
+different topics. I keep all of the\
+1:27\
+topics very narrow, very niche, and I\
+1:29\
+actually don't have it start new\
+1:31\
+sessions anymore. Previously, a default\
+1:34\
+setting in OpenClaw is to start a new\
+1:37\
+session every day at like 4:00 a.m. That\
+1:39\
+means it basically forgot everything in\
+1:41\
+the chat prior, which would make sense\
+1:43\
+if I had a single DM that spanned\
+1:46\
+forever, but instead I have all of these\
+1:49\
+individual channels, so I didn't want to\
+1:51\
+do that anymore. And the solution, I\
+1:53\
+simply had it set the expiration of a\
+1:55\
+session to be one year. And so look at\
+1:57\
+all these different sessions. I have my\
+1:59\
+knowledge base, my food journal, cron\
+2:01\
+updates, video research,\
+2:02\
+self-improvement, business analysis,\
+2:05\
+meeting prep, all of these different\
+2:07\
+ones, and it allows me to stay on topic.\
+2:09\
+All right, so now back here, second, I\
+2:11\
+have Slack, but I have it very narrowly\
+2:14\
+implemented in Slack. It's only\
+2:16\
+available in two channels, and it's only\
+2:18\
+available to me. I am the only one who's\
+2:21\
+able to invoke my open claw. If somebody\
+2:24\
+else tries to invoke it, it just ignores\
+2:26\
+it. Then of course we have our command\
+2:28\
+line interface. I sometimes SSH in and\
+2:31\
+we also have scripts. I'm using multiple\
+2:33\
+models of course. So we have Anthropic,\
+2:36\
+Opus, Sonnet and Haiku. I'm using Google\
+2:38\
+Gemini for a bunch of stuff. We're using\
+2:40\
+XAI Gro and XARCH. And of course we're\
+2:43\
+using Open AI. And it already has after\
+2:47\
+just two plus weeks of using it a ton of\
+2:49\
+different skills. I use it as a personal\
+2:51\
+CRM. I use it as a knowledge base, a\
+2:54\
+video idea pipeline, X and Twitter\
+2:57\
+research, business meta analysis. That's\
+3:00\
+a crazy one. Wait till I tell you about\
+3:02\
+that. HubSpot Ops. I always apply the\
+3:05\
+humanizer skill. I want all the text\
+3:07\
+coming out of it to be humanlike, not AI\
+3:09\
+like. No M dashes. I plugged it into my\
+3:12\
+to-do list and I kind of use it as a\
+3:14\
+task management system as well. I track\
+3:17\
+all of the usage across everything I do.\
+3:20\
+And of course, I use it for YouTube\
+3:21\
+analytics. And I'm also storing a ton of\
+3:24\
+data. I actually try to store all the\
+3:25\
+data I possibly can. And I usually do\
+3:28\
+that in a traditional database mixed\
+3:31\
+with a vector column. So I want to be\
+3:34\
+able to do traditional SQL searches, but\
+3:36\
+I also want to be able to do natural\
+3:38\
+language searches using the vector\
+3:40\
+column. And so I created a standardized\
+3:43\
+way of creating this hybrid database and\
+3:45\
+I use it across a bunch of different\
+3:47\
+skills. So I have my contacts in my CRM.\
+3:50\
+Again, I'm going to go over all of these\
+3:52\
+use cases. So I have my knowledge base,\
+3:54\
+I have video pitches, my business meta\
+3:56\
+analysis, views of my social channels,\
+3:59\
+the cron log, everything is stored. Then\
+4:02\
+I've plugged in a bunch of different\
+4:03\
+external services. We have Google\
+4:04\
+Workspace via GG. I have a sauna. I have\
+4:08\
+HubSpot. I have to-d doist, Fathom,\
+4:10\
+Brave, and GitHub. I have X. I have\
+4:13\
+YouTube's API. So much is happening\
+4:16\
+right now. And by the way, a quick shout\
+Sponsor\
+4:18\
+out to the sponsor of this video,\
+4:19\
+Greile. I use Grapile to review all the\
+4:22\
+code that I'm putting out for OpenClaw,\
+4:26\
+and it's a lot. And it catches bugs that\
+4:28\
+I wouldn't have seen, that even Opus or\
+4:31\
+GPT 5.3 Codeex wouldn't have seen. And\
+4:33\
+it's just a great system to really shore\
+4:36\
+up all of the rough edges of my OpenClaw\
+4:38\
+instance. These guys at Grappile spend\
+4:41\
+all of their time thinking about code\
+4:43\
+review and it helps me and my team save\
+4:45\
+a bunch of time. It's used by some of\
+4:47\
+the most popular repos in the world\
+4:50\
+including OpenClaw, Nvidia, PyTorch,\
+4:53\
+Postto, Storybook, and many more. Don't\
+4:55\
+waste your team's time on code review,\
+4:57\
+but code review is still critically\
+4:59\
+important. Let Greile do it. Try Reptile\
+5:02\
+for free for 14 days. I'll drop a link\
+5:04\
+down below. They've been a fantastic\
+5:06\
+partner. So, help us help yourself. Go\
+5:09\
+check them out. Click through the link\
+5:11\
+and get your 14 days for free. All\
+Personal CRM\
+5:12\
+right. So, the first workflow I want to\
+5:15\
+talk about is my personal CRM. It is\
+5:18\
+incredible because it allows me to plug\
+5:20\
+in all of this builtup knowledge into\
+5:22\
+everything else I'm doing. Let me just\
+5:24\
+explain. So, I basically have my\
+5:25\
+OpenCloud download all of my emails and\
+5:28\
+start to parse through them, understand\
+5:30\
+who's the email from, filter out\
+5:32\
+contacts that I don't want saved, like\
+5:34\
+newsletters and cold outreach, cold\
+5:37\
+pitches, and then it finds the highest\
+5:39\
+quality contacts, and starts saving it\
+5:41\
+to my CRM. It reads all of the\
+5:44\
+downloaded emails, builds out a graph,\
+5:46\
+builds out an understanding of all the\
+5:49\
+conversations I've had with each\
+5:51\
+contact, and starts to save that in the\
+5:53\
+database. and I have it do that every\
+5:55\
+single day. So, it's always up todate.\
+5:57\
+It always knows who I'm talking to, what\
+5:59\
+I'm talking about, and it's just super\
+6:02\
+helpful because I can always ask\
+6:03\
+questions like, "Who is the last person\
+6:05\
+I talked to at Grapile and what did we\
+6:07\
+talk about?" Or, "Who else do I know at,\
+6:09\
+you know, this other company?" And so,\
+6:11\
+this is how it works. I have the daily\
+6:13\
+ingestion trigger, which is a cron job.\
+6:16\
+It downloads Gmail and my calendar, by\
+6:18\
+the way, not just Gmail, also my\
+6:20\
+calendar. It extracts people from the\
+6:22\
+senders and participants. It dduplicates\
+6:25\
+everything, merges contact records. It\
+6:27\
+uses AI to classify the role in context\
+6:30\
+and I use a very inexpensive very fast\
+6:33\
+Gemini 2.5 flash model I believe to do\
+6:36\
+that classification. Then we start to\
+6:38\
+update the timeline in Last Touch. It\
+6:40\
+does semantic indexing and it sends me\
+6:42\
+updates via Telegram when I want it and\
+6:44\
+I can also just query against it as I\
+6:46\
+said earlier. Now, where this is also\
+6:48\
+very useful is in my meeting prep\
+6:50\
+workflow. Every single day, first thing\
+6:52\
+in the morning, it looks at my calendar\
+6:54\
+for the day. It filters out events that\
+6:57\
+don't have anybody or only have my\
+6:58\
+internal team. And it basically gives me\
+7:00\
+a meeting prep for the day. It says,\
+7:02\
+"Hey, you're meeting with this person.\
+7:03\
+Here's the last thing you talked about.\
+7:05\
+Here's what they want to talk about in\
+7:06\
+this meeting. Here's who they are." And\
+7:08\
+it's just super helpful to keep me up to\
+Knowledge Base\
+7:11\
+date going into these meetings. All\
+7:12\
+right. Next is my knowledge base. I am\
+7:15\
+constantly on X and searching the web\
+7:18\
+and reading articles all about\
+7:20\
+artificial intelligence. And I wanted a\
+7:22\
+single place where I can just throw\
+7:24\
+everything interesting that I find into\
+7:26\
+a single repository and I'm able to use\
+7:29\
+natural language to search against it.\
+7:32\
+And again, all of the things that I'm\
+7:34\
+building, I want to be able to use\
+7:35\
+across different workflows. That's\
+7:37\
+really important. And so when I get to\
+7:40\
+the video ideiation workflow later,\
+7:42\
+you're going to see it actually\
+7:44\
+references different articles that are\
+7:46\
+that have been saved to this knowledge\
+7:48\
+base. And so the way this works is I\
+7:51\
+take a file or URL, I drop it in\
+7:53\
+Telegram, it detects the source type,\
+7:55\
+extracts all the information from it,\
+7:58\
+normalizes it, chunks it, puts it in the\
+8:00\
+vector database, and then stores it. So\
+8:03\
+then when I have a question like, find\
+8:04\
+me all the articles about the Opus 4.6 6\
+8:07\
+model. And so I put that user question\
+8:10\
+in, it embeds it, it grabs all of the\
+8:13\
+candidate articles, and then it answers\
+8:16\
+with sources. So now I'm building up\
+8:18\
+this infinite knowledge base of\
+8:21\
+everything that has interested me and it\
+8:23\
+just stores it and I can always\
+8:25\
+reference it. If I'm creating a video\
+8:27\
+and I want to reference a previous\
+8:28\
+article, it is now so easy to find.\
+Video Idea Pipeline\
+8:30\
+Okay, next. And this is one of my\
+8:32\
+favorite ones. This is the video idea\
+8:35\
+pipeline. This was something that I\
+8:37\
+spent a ton of time on. The way I was\
+8:39\
+doing it previously is I would drop\
+8:42\
+links, again, something that I'm now\
+8:44\
+doing via the knowledge base into Slack\
+8:46\
+to share with my team. We would talk\
+8:48\
+about it and the ones that interested us\
+8:50\
+the most, we would decide to make a\
+8:51\
+video about. Then I would create an ASA\
+8:54\
+card. I would do research, find all\
+8:56\
+relevant articles, find relevant\
+8:58\
+exposts, and put it all together in that\
+9:00\
+ASA card. And it would just, you know,\
+9:03\
+take a lot of time. But now I don't have\
+9:06\
+to do any of that. So first remember the\
+9:08\
+previous knowledge base? Well, part of\
+9:10\
+that workflow is when I drop an article\
+9:13\
+in Telegram and it gets all that\
+9:15\
+information, it posts to the Slack\
+9:17\
+channel for me and it says, "Hey, this\
+9:19\
+is what Matt's looking at." And we can\
+9:21\
+have that discussion there. Also, if\
+9:23\
+somebody from my team drops a link in\
+9:25\
+Slack, I can actually tag my open claw\
+9:28\
+and say, "Hey, let's make a video idea\
+9:30\
+about this." And so both of these ways\
+9:32\
+work. Let me show you what happens after\
+9:34\
+that. So we have this idea trigger. It\
+9:36\
+either comes from Slack or Telegram. We\
+9:39\
+parse the video topic or intent. Then it\
+9:42\
+does research on X and it also does\
+9:45\
+research on the web. I don't know why it\
+9:46\
+doesn't say that here, but it does. Then\
+9:48\
+we query the knowledgebased context. So\
+9:51\
+it looks for potential articles that\
+9:53\
+might be relevant. It comes up with\
+9:55\
+video pitches and make sure it hasn't\
+9:56\
+pitched us something like that already.\
+9:58\
+Then it starts to build hooks and an\
+10:00\
+outline for the video. It links all\
+10:02\
+sources, creates that ASA task, and then\
+10:05\
+sends confirmation to wherever I invoked\
+10:07\
+it. All of this happens in like 30\
+10:10\
+seconds. Now, super super valuable,\
+10:13\
+right? So, here's an example. In\
+10:15\
+Telegram, I dropped this link. So,\
+10:17\
+Thomas Donkey, former CEO of GitHub,\
+10:19\
+started a new company. Sounds\
+10:20\
+interesting. I dropped it in here. It\
+10:23\
+saved it into my knowledge base. Then it\
+10:25\
+also pushed a quick summary and link to\
+10:29\
+the Slack channel where we talk about\
+10:30\
+all of this stuff. Then if we wanted to\
+10:33\
+create a video about it, this is about a\
+10:34\
+different topic, but I said, "Whoa,\
+10:36\
+Claude, short video idea." Then Claude\
+10:39\
+jumps in, does a bunch of research, adds\
+10:42\
+the card, and everything. It's just so\
+10:44\
+easy. Now, now you're seeing how all of\
+10:46\
+these different pieces work together to\
+10:48\
+create this incredibly autonomous system\
+10:50\
+that saves me a bunch of time. And by\
+10:53\
+the way, if you want to see 25 more use\
+10:55\
+cases, my team put together a completely\
+10:57\
+free ebook all about open claw use\
+11:01\
+cases, specifically how to implement\
+11:03\
+them, how to get them going, why they're\
+11:04\
+valuable, and so much more. Go download\
+11:06\
+the ebook. It's completely free. I'll\
+11:08\
+drop a link in the description below.\
+Twitter/X Search\
+11:10\
+Okay. Next, I built out an entire\
+11:12\
+workflow just for searching on Twitter\
+11:14\
+because I do so many searches on\
+11:16\
+Twitter, whether it's getting the data\
+11:18\
+from specific posts, and there are so\
+11:20\
+many different ways to do it. I actually\
+11:22\
+built an entire fallback daisy chain\
+11:24\
+system that handles it for me and it's\
+11:27\
+costoptimized and yeah, it's amazing.\
+11:30\
+Let me show you. All right, so here's\
+11:31\
+how it's actually working. So I actually\
+11:33\
+had So I had cursor tell me exactly\
+11:36\
+what's happening. So first tier one, it\
+11:38\
+uses FX Twitter's API, which is\
+11:41\
+apparently free. I don't really\
+11:42\
+understand how it's free, but it is. You\
+11:44\
+can only grab individual tweets with it.\
+11:46\
+Single tweet lookup only. There's no\
+11:48\
+search. You can't say show me trending\
+11:50\
+topics or show me topics or show me\
+11:52\
+posts related to this other topic. You\
+11:54\
+can't do that. So fine. Then it goes to\
+11:57\
+the lowcost tier 2 which is the\
+12:00\
+twitterapi.io.\
+12:02\
+And I'm still playing around with this.\
+12:04\
+I'm kind of new to this service, but\
+12:05\
+it's a relatively inexpensive way to\
+12:07\
+query against Twitter. So it's 15 cents\
+12:10\
+per thousand tweets. It does search\
+12:12\
+profiles, user tweets, thread context,\
+12:15\
+and I did grab an API for that. Then I\
+12:18\
+use the expensive tier three as another\
+12:20\
+fallback. The official X API v2. This is\
+12:23\
+very expensive. So it's 0.005 cents per\
+12:28\
+tweet, pay per use, but you get\
+12:30\
+basically everything. Then as a\
+12:32\
+fallback, we use the XAI API with the\
+12:35\
+XARCH tool. Sometimes we use Grock to\
+12:38\
+search against Twitter. All of these\
+12:41\
+things come together and just give me an\
+12:43\
+optimized, cheapest, best, fastest\
+12:45\
+result. And so here's what that workflow\
+Analytics Tracker\
+12:47\
+looks like. All right. Next, obviously,\
+12:50\
+I use it to track my YouTube analytics\
+12:53\
+and some of my competitors or the\
+12:55\
+channels that I keep a close eye on. So,\
+12:57\
+it hits the API daily, pulls down all of\
+12:59\
+my stats for all of my videos, the\
+13:02\
+channels growth, everything. It persists\
+13:04\
+it and takes a snapshot and records it\
+13:06\
+in a database locally. Then it does some\
+13:08\
+computations on it and again stores all\
+13:11\
+that locally. We scan our competitors,\
+13:13\
+their uploads, their cadence to see what\
+13:15\
+they're doing. We get PNG charts, and\
+13:18\
+then it feeds all of those insights into\
+13:20\
+the metaanalysis workflow, which I'll\
+13:23\
+get to in a moment. And so, we can kind\
+13:24\
+of get a sense of which types of videos\
+13:26\
+are you guys liking, what titles are\
+13:29\
+working, what thumbnails are working,\
+13:30\
+which are not, and it gives me\
+13:32\
+recommendations all the time. All right,\
+Data Review\
+13:34\
+this next one is absolutely insane. And\
+13:37\
+I actually got this idea from Brian\
+13:38\
+Armstrong, the CEO of Coinbase. He said\
+13:40\
+they're using AI in a really novel way\
+13:43\
+where they basically plug in all of\
+13:44\
+their data and have AI review all of it\
+13:48\
+and look for gaps in their understanding\
+13:50\
+of their business, ways to improve. And\
+13:51\
+I thought, hey, we can do that. We're\
+13:53\
+already collecting all this data. Let's\
+13:55\
+do it. So, check this out. I basically\
+13:57\
+ingest all the data from my business. I\
+14:00\
+put together a council of AI experts, AI\
+14:04\
+agents that all work together,\
+14:06\
+collaborate, and then put together a\
+14:08\
+daily report for me on things that I'm\
+14:10\
+missing from the business, ways to\
+14:12\
+improve the business, and more. So,\
+14:14\
+first, here are all the signals. We have\
+14:16\
+YouTube metrics, CRM health, crown\
+14:18\
+reliability, social growth, Slack, all\
+14:20\
+the Slack messages, emails, ASA X,\
+14:25\
+Fathom meetings, that's one of the\
+14:26\
+coolest ones. So, Fathom, which is an AI\
+14:28\
+notetaker, joins all my meetings,\
+14:30\
+records them, transcribes them, and then\
+14:33\
+I ingest that. So, I have a record of\
+14:35\
+all the meetings that I have, and then\
+14:37\
+also my HubSpot pipeline. Then, we\
+14:39\
+compact it all down into the top 200\
+14:42\
+signals by confidence. And I have first\
+14:45\
+a draft created. So, it looks at all of\
+14:48\
+these different signals and is prompted\
+14:49\
+with something like, "What can we do to\
+14:52\
+improve the business?" It's obviously a\
+14:53\
+much more sophisticated prompt than\
+14:55\
+that, but that's the gist. Then phase\
+14:57\
+two, I have a growth strategist, a\
+14:59\
+revenue guardian, a skeptical operator,\
+15:01\
+and a team dynamics architect all review\
+15:05\
+it, collaborate, go back and forth with\
+15:07\
+each other. They come to a consensus. I\
+15:10\
+have a council moderator again, Opus\
+15:12\
+4.6. Sorry, you can't see that. They\
+15:15\
+reconcile disagreements, put it all\
+15:17\
+together, and finally rank everything\
+15:19\
+and give me that report. That runs once\
+15:21\
+a day in the middle of the night. So,\
+15:22\
+it's when I'm not using a lot of usage\
+15:25\
+from Opus anyways. And then it provides\
+15:27\
+me with that report and it gives me\
+15:30\
+great actionable insights about the\
+15:32\
+business. It is super super cool. All\
+HubSpot\
+15:35\
+right. Next, I plugged in HubSpot into\
+15:36\
+my OpenClaw. And I'm not actually using\
+15:39\
+this all that much, but I do allow\
+15:42\
+OpenClaw to reference my deal pipeline.\
+15:45\
+And of course, that's for sponsorships\
+15:46\
+for this channel. And so, it does have\
+15:49\
+access to it. I'm not doing a lot of\
+15:50\
+natural language queries like what this\
+15:53\
+is making possible, but here it is\
+15:55\
+nonetheless. So, a natural language\
+15:56\
+request comes in, it classifies the\
+15:58\
+intent, maps to the endpoint, looks it\
+16:01\
+all up, and then returns a summary. So,\
+16:04\
+I can say what deals are in my\
+16:06\
+qualification stage. So, kind of useful,\
+16:09\
+but again, the more useful thing is just\
+16:10\
+it having access to all of the deals\
+Humanizer\
+16:13\
+that I'm currently working on. All\
+16:14\
+right, next. And this is something that\
+16:16\
+I use across the board both in my direct\
+16:18\
+messages with my open claw as well as\
+16:21\
+any content it writes. It basically uses\
+16:23\
+the humanizer skill against everything.\
+16:26\
+And so that removes the AI smell from\
+16:29\
+writing. And it's very easy. It is a\
+16:32\
+skill. It's on Clawhub. You can download\
+16:34\
+it, install it, and it's constantly\
+16:36\
+being updated with AI smells. So I have\
+16:40\
+a draft input. It detects the AI writing\
+16:42\
+patterns, marks the problem at expands,\
+16:44\
+rewrites it, and then publishes it when\
+16:47\
+it's ready. But it also just looks at\
+16:48\
+everything. It's not just reactive, it's\
+16:50\
+also proactive. So that's a cool one as\
+Image/Video Generation\
+16:53\
+well. All right. Next is image\
+16:54\
+generation and also video generation. I\
+16:57\
+plugged in Nano Banana and VO as APIs to\
+17:02\
+OpenClaw and now it has the ability to\
+17:04\
+create images and video anytime I want\
+17:06\
+for any use case. So here's that\
+17:08\
+workflow. I send it an existing image\
+17:10\
+with edit instructions or I tell it what\
+17:12\
+I want. All of this happens through\
+17:14\
+Telegram. I have a separate Telegram\
+17:16\
+topic for images and another one for\
+17:19\
+video. So then it interprets it,\
+17:22\
+generates the images, and goes back and\
+17:24\
+forth until it's finally ready. Let me\
+17:26\
+actually show you what that looks like.\
+17:27\
+So here I just say create an icon to use\
+17:30\
+in Telegram to represent yourself. Boom.\
+17:32\
+And I said make another but make it\
+17:34\
+bigger and easier to see. And it did\
+17:36\
+that but it's kind of horizontal format.\
+17:38\
+I said make it square and boom, there it\
+17:40\
+is. Very easy. Now I have basically\
+17:43\
+infinite image gen capability now. So\
+17:46\
+I'll just say make another. And I\
+17:48\
+explicitly told it rather than saving\
+17:51\
+the image locally, which would be on my\
+17:53\
+open claw MacBook Air, I said just send\
+17:56\
+it to me in Telegram. And here we go.\
+17:58\
+Here's another one. A wonky looking one,\
+18:00\
+but nonetheless, it knew what I was\
+18:02\
+talking about. Then we also have video\
+18:04\
+generation. So I said make a video. And\
+18:07\
+here's that. And so now I can just\
+18:09\
+generate any video I need. It's so\
+18:11\
+crazy. And again, these are skills that\
+18:14\
+can be used in any other automation\
+18:15\
+throughout OpenCloud. That's the key.\
+18:17\
+Make them modular. Make them reusable.\
+18:21\
+And you just have to tell it. Just tell\
+To-Do List\
+18:22\
+it to do that. All right. Here's another\
+18:24\
+one. I also have it managing my to-do\
+18:27\
+list. And this one is crazy. I just set\
+18:29\
+this up. All right. So, there's a few\
+18:30\
+ways that this can get started. One, I\
+18:32\
+have a meeting. I mentioned earlier\
+18:34\
+whenever I have a video conference, I\
+18:36\
+have my Fathom notetaker join it and\
+18:39\
+transcribe all the notes. Then rather\
+18:41\
+than using Fathom's builtin takeaway\
+18:44\
+generator, which was wonky and didn't\
+18:47\
+really work all that well, I take the\
+18:49\
+transcript and send it to Gemini 2.5\
+18:52\
+Flashlight and say, "Look through\
+18:54\
+everything. Tell me what are key\
+18:56\
+takeaways for me to do and takeaways\
+18:59\
+that my attendee needs to do." And\
+19:01\
+record them both. Again, all of this\
+19:03\
+gets stored locally. I can also just\
+19:05\
+simply say, okay, add a task to follow\
+19:07\
+up with X person by Friday. And all of\
+19:11\
+it gets extracted, actions, owner,\
+19:14\
+deadlines, cross referenced with the\
+19:16\
+CRM, who is the person, what is the\
+19:18\
+company, it looks at all of the context\
+19:20\
+it has about them, shows me the task\
+19:23\
+list, if I approve it, it puts it into\
+19:25\
+my to-doist, which is the to-do list app\
+19:28\
+that I use, and it just manages it. It's\
+19:31\
+so clean. And I just think the coolest\
+19:33\
+part of this is that it actually will\
+19:34\
+read the transcript of my meetings and\
+Usage Tracker (Saves Money)\
+19:37\
+automatically suggest to-dos. All right.\
+19:39\
+Next, I started to notice because I'm\
+19:41\
+doing so much with it. Occasionally, I\
+19:43\
+would get charged a lot of money for an\
+19:45\
+API call or for a model, and I wanted to\
+19:47\
+keep an eye on it. I wanted to make sure\
+19:49\
+that there weren't any unexpected\
+19:51\
+charges. And, you know, I'm still paying\
+19:52\
+per month. I pay a hundred bucks per\
+19:54\
+month for the Cloud subscription. I pay\
+19:56\
+for the Gemini API calls, the X API\
+19:59\
+calls. It's not cheap. I'm probably\
+20:01\
+paying about $150 per month in total for\
+20:05\
+all of this, which relative to the value\
+20:08\
+I'm getting from it is very cheap in my\
+20:11\
+opinion. So, I have something now that\
+20:13\
+tracks all of my spend and my usage. So,\
+20:16\
+this is something that runs silently in\
+20:18\
+the background. Every single AI call,\
+20:20\
+every single API call gets logged to a\
+20:22\
+single place. And I can ask how much I\
+20:24\
+spent this week, which workflows are\
+20:27\
+costing a lot of money, show me the\
+20:28\
+30-day trend. Again, records all of it\
+20:31\
+to a usage log. It queries a log, gives\
+20:34\
+me cost breakdowns, gives me usage\
+20:36\
+breakdowns, which is just very useful\
+20:38\
+for figuring out what I'm doing, maybe\
+20:41\
+things that are automated and running\
+20:43\
+that I didn't even know about. Just\
+20:44\
+keeping an eye on everything. This is\
+Services\
+20:46\
+very useful. All right, let me show you\
+20:48\
+all of the services I'm using now. So, I\
+20:51\
+use Telegram, obviously. I use Slack. So\
+20:54\
+that's just another surface in which I\
+20:55\
+can communicate with OpenClaw, Google\
+20:57\
+Workspace via Gogg, and that's for\
+21:00\
+calendar and email ingestion, drive\
+21:02\
+backup. So I'm going to get to how I\
+21:04\
+save all of this because if I lost my\
+21:06\
+OpenClaw, I would be very upset if I\
+21:08\
+could not easily replicate it. I use\
+21:11\
+Asauna, To-Doist, HubSpot, my YouTube\
+21:13\
+APIs. I use X and Twitter search,\
+21:15\
+Fathom, GitHub, Google Drive. Again,\
+21:19\
+that should be included here. I don't\
+21:20\
+know why it listed it twice. I use brave\
+21:22\
+search for searching the web and\
+21:24\
+firecrawl as well for searching the web.\
+Automations\
+21:26\
+All right. So next, let me just show you\
+21:28\
+the holistic view of all the automations\
+21:30\
+I'm doing. So every hour I sync the code\
+21:34\
+repo. I check for changes and that might\
+21:36\
+be changes OpenClaw makes to itself.\
+21:38\
+It's self-evolving. That might be\
+21:40\
+changes that I'm making in cursor to it.\
+21:43\
+Anything. It checks for changes and just\
+21:45\
+backs it up to GitHub. So critical. But\
+21:48\
+I don't back up databases to GitHub\
+21:50\
+because that's kind of a waste of space.\
+21:52\
+So instead, I have a Google Drive and I\
+21:54\
+save all of the databases there. I also\
+21:57\
+have a very detailed document about how\
+22:00\
+to restore everything in the case that I\
+22:02\
+lose everything. We also check the CRM\
+22:04\
+for changes. We scout for new signals\
+22:07\
+from anywhere basically. Then every\
+22:09\
+single day we're ingesting emails. We're\
+22:11\
+collecting YouTube analytics. We're\
+22:13\
+performing health checks against the\
+22:15\
+whole platform. and I'll explain that in\
+22:17\
+a moment. And then we're doing the\
+22:18\
+nightly business briefing. Every week we\
+22:21\
+synthesize daily notes into long-term\
+22:23\
+memory. That's something built into\
+22:24\
+OpenClaw. It's doing some housekeeping.\
+22:27\
+And all of this follows the same\
+22:28\
+pattern. It's using cron executes tasks,\
+22:31\
+notifies me in Telegram. So I have this\
+22:34\
+telegram channel about all the cron jobs\
+22:36\
+that run. I get a notice about them,\
+22:38\
+what happened, if they failed, if they\
+22:40\
+succeeded, and all of that again just\
+Backup\
+22:42\
+gets piped to Telegram. All right. Now,\
+22:44\
+let me talk a little bit more about the\
+22:46\
+backup because again, I don't ever want\
+22:48\
+to lose this. I've spent a lot of time\
+22:50\
+setting it up. And so, it is all tracked\
+22:52\
+in Git. I push all the code including\
+22:55\
+the markdown files to Git. It is\
+22:58\
+constantly keeping track of it. And so,\
+23:00\
+if I ever get to a bad state, I can roll\
+23:02\
+it back, although that hasn't happened.\
+23:03\
+And then, as I mentioned, all of my\
+23:05\
+data, the databases, all get backed up\
+23:07\
+to Google Drive all the time so that I'm\
+23:10\
+not losing anything. So, here it is. the\
+23:12\
+CRM data, the analytics, the knowledge\
+23:14\
+base, business analysis, cron logs,\
+23:16\
+everything gets backed up, timestamped,\
+23:19\
+boom, Google Drive, and if something\
+23:21\
+goes wrong, here's how we bring it back.\
+23:23\
+And the code gets put into GitHub again,\
+23:26\
+always up to date. And I have all of\
+23:28\
+this running on a schedule, so it\
+Memory\
+23:30\
+updates about every hour. Okay, next\
+23:32\
+memory. How do we remember all of this\
+23:35\
+stuff? Well, I'm using kind of just the\
+23:37\
+default memory built in. I'm not even\
+23:39\
+using QMD and I probably should, but I\
+23:42\
+haven't figured out exactly how I want\
+23:43\
+to use it. So, it's all pretty standard.\
+23:45\
+Here's what happens. During the day,\
+23:46\
+conversations with me, task completed,\
+23:48\
+mistakes made all get piped into daily\
+23:51\
+notes. Those have a weekly synthesis. It\
+23:54\
+distills the patterns and preferences,\
+23:55\
+and gets stored into long-term memory.\
+23:58\
+Then, we also have the learnings folder,\
+24:00\
+corrective patterns, mistakes not to\
+24:03\
+make again, and it just gets better over\
+24:05\
+time without needing to manually do\
+Building OpenClaw\
+24:07\
+that. All right. Now, let me show you\
+24:09\
+how I'm actually building OpenClaw. I\
+24:12\
+know a lot of you are probably just\
+24:14\
+chatting with OpenClaw directly and\
+24:16\
+having it build stuff for you, which is\
+24:18\
+fine, but I have actually found that I\
+24:21\
+prefer developing in cursor. And so,\
+24:25\
+there's a couple reasons for that. One,\
+24:26\
+I just find the interface much easier to\
+24:28\
+use. I can see the files being created.\
+24:31\
+It is just built for development versus\
+24:33\
+Telegram, which is just a single chat\
+24:36\
+window. It's just much more difficult.\
+24:37\
+Again, you can do it, but I prefer using\
+24:40\
+cursor. And so, what I do is on my Mac\
+24:43\
+Studio or again, wherever I am, I have a\
+24:45\
+few different laptops. I have basically\
+24:47\
+installed cursor and I SSH into the\
+24:50\
+MacBook Air, which openclaw is on. So, I\
+24:53\
+have cursor SSH, I have direct SSH, and\
+24:55\
+then I use team viewer. I install team\
+24:57\
+viewer if I need to really just take\
+24:59\
+control of the computer completely. The\
+25:01\
+MacBook Air is always on, never leaves\
+25:04\
+home, and I have multiple different gits\
+25:07\
+that I'm using. One for major projects\
+25:09\
+like the CRM and then one for OpenClaw\
+25:11\
+as a whole. I'm making new edits.\
+25:13\
+Everything I'm doing is mostly happening\
+25:15\
+in cursor and then I just verify it in\
+25:18\
+Telegram. I write tests for everything\
+25:20\
+and I am committing and pushing to\
+Updating Files\
+25:22\
+GitHub frequently. All right, the last\
+25:24\
+thing I want to show you is how I keep\
+25:26\
+all of the markdown files up to date\
+25:28\
+because there can be a lot of drift.\
+25:30\
+There are multiple different markdown\
+25:32\
+files. They all do something specific\
+25:35\
+and as you're adding skills, as you're\
+25:36\
+telling OpenClaw what to do, sometimes\
+25:39\
+it puts it in multiple places. Also,\
+25:41\
+everything that's in the markdown files\
+25:43\
+is really dependent on the model you're\
+25:45\
+using. Opus 4.6, for example, really\
+25:48\
+listens to every single word that it is\
+25:50\
+prompted with. You don't need to use\
+25:52\
+bold. You don't need to use all caps.\
+25:54\
+You don't need to say things like don't\
+25:55\
+ever forget this or make sure you do\
+25:57\
+this critical. You don't need to do any\
+25:58\
+of that. But that's very different from\
+26:00\
+how Opus 4.5 was. So here's what I do.\
+26:03\
+First, I created this workspace.md file\
+26:06\
+which specifies how everything works\
+26:09\
+based on how I've implemented it. So\
+26:11\
+here the table of contents and yes, it\
+26:13\
+is a very large file, but it is a\
+26:15\
+reference to be used in other places. So\
+26:17\
+I have what the workspace architecture\
+26:19\
+looks like. I have key patterns SQLite\
+26:21\
+for all persistent storage vector\
+26:23\
+telegram I have the platform\
+26:25\
+configuration I have model providers\
+26:27\
+that I'm using fallback chain plugins\
+26:31\
+etc etc but then we have each of these\
+26:33\
+files the agent file the heartbeat the\
+26:35\
+identity the memory all of these files\
+26:37\
+do something different and so how I made\
+26:40\
+sure that they stayed upto-date and\
+26:42\
+accurate is I had openclaw go to the\
+26:45\
+openclaw website download the best\
+26:47\
+practices and store them locally and I\
+26:50\
+have it always reference it and once a\
+26:53\
+day I have it look through all of the\
+26:54\
+markdown files and cross reference\
+26:56\
+against the best practices and say is\
+26:58\
+there anything you need to change\
+27:00\
+recommend things to me. Then finally for\
+27:03\
+Opus 4.6 best practices I had it go and\
+27:06\
+download the prompting guide for Opus\
+27:09\
+4.6 six and I also store that locally\
+27:12\
+and I also have it cross reference that\
+27:15\
+and I say look for anything that goes\
+27:17\
+against the prompting best practices\
+27:19\
+provided by anthropic and so it does\
+27:22\
+this once per day and it's constantly\
+27:25\
+updating itself cleaning itself very\
+27:28\
+useful and so that's it for today I know\
+27:30\
+that was a lot hopefully that shows you\
+27:31\
+not only what's possible but how to get\
+27:33\
+the most out of openclaw if you enjoyed\
+27:35\
+this video please consider giving a like\
+27:37\
+and subscribe and I'll see you in the\
+27:39\
+Next one.\
+\
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenClaw Episode",
+  "type": "object",
+  "properties": {
+    "episode_id": { "type": "string" },
+    "ts_start": { "type": "string", "format": "date-time" },
+    "ts_end": { "type": "string", "format": "date-time" },
+    "context": {
+      "type": "object",
+      "properties": {
+        "channel": { "type": "string" },
+        "project": { "type": "string" },
+        "horizon": { "type": "integer", "minimum": 0, "maximum": 4, "description": "0=task 1=today 2=sprint 3=quarter 4=identity" }
+      }
+    },
+    "goal": { "type": "string" },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tool": { "type": "string" },
+          "summary": { "type": "string" },
+          "checkpoint_ref": { "type": "string" }
+        },
+        "required": ["tool", "summary"]
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "properties": {
+        "status": { "type": "string", "enum": ["success", "failure", "partial", "rejected", "timeout"] },
+        "latency_sec": { "type": "number" },
+        "user_feedback": { "type": "string" }
+      },
+      "required": ["status"]
+    },
+    "lessons": { "type": "array", "items": { "type": "string" } },
+    "remedy": { "type": "string" },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "tokens_in": { "type": "integer" },
+        "tokens_out": { "type": "integer" },
+        "usd_est": { "type": "number" }
+      }
+    },
+    "related_beliefs": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["episode_id", "ts_start", "goal", "outcome"]
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenClaw Belief Object",
+  "type": "object",
+  "properties": {
+    "belief_id": { "type": "string" },
+    "kind": { "type": "string", "enum": ["preference", "fact", "constraint", "pattern", "vendor", "workflow", "principle", "goal"] },
+    "subject": { "type": "string", "description": "Dot-notation category (e.g., parts.sourcing, stack.backend)" },
+    "statement": { "type": "string" },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ts": { "type": "string", "format": "date-time" },
+          "source": { "type": "string", "enum": ["chat", "action", "correction", "observation", "user-pin"] },
+          "ref": { "type": "string" },
+          "note": { "type": "string" }
+        },
+        "required": ["ts", "source"]
+      }
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1.0, "description": "0.99 soft cap for agent-derived beliefs. 1.0 allowed only for user-pinned goals." },
+    "recency_ts": { "type": "string", "format": "date-time" },
+    "reinforcement_count": { "type": "integer", "minimum": 0 },
+    "contradiction_count": { "type": "integer", "minimum": 0 },
+    "north_star_relevance": { "type": "number", "minimum": 0, "maximum": 1 },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "ttl_days": { "type": "integer", "default": 180 },
+    "frozen": { "type": "boolean", "default": false, "description": "User-pinned, no decay" },
+    "mutation_zone": { "type": "string", "enum": ["kernel", "identity", "skill"], "default": "skill" },
+    "status": { "type": "string", "enum": ["active", "decayed", "archived", "superseded"], "default": "active" }
+  },
+  "required": ["belief_id", "kind", "subject", "statement", "confidence"]
+}

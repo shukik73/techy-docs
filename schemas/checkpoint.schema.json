@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenClaw Run Checkpoint",
+  "description": "Written after every tool call for crash recovery",
+  "type": "object",
+  "properties": {
+    "run_id": { "type": "string" },
+    "trigger_id": { "type": "string" },
+    "started_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "status": { "type": "string", "enum": ["running", "completed", "failed", "stale", "resumed"] },
+    "current_step": { "type": "integer" },
+    "total_steps": { "type": "integer" },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "index": { "type": "integer" },
+          "tool": { "type": "string" },
+          "input_summary": { "type": "string" },
+          "output_summary": { "type": "string" },
+          "status": { "type": "string", "enum": ["pending", "running", "completed", "failed", "skipped"] },
+          "ts": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "context_snapshot": {
+      "type": "object",
+      "description": "Minimal context needed to resume",
+      "properties": {
+        "goal": { "type": "string" },
+        "relevant_beliefs": { "type": "array", "items": { "type": "string" } },
+        "working_files": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "recovery_policy": {
+      "type": "object",
+      "properties": {
+        "stale_after_hours": { "type": "number", "default": 2 },
+        "on_stale": { "type": "string", "enum": ["resume", "summarize_and_notify", "abort"], "default": "summarize_and_notify" }
+      }
+    }
+  },
+  "required": ["run_id", "trigger_id", "started_at", "status", "current_step"]
+}

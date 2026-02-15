@@ -1,0 +1,124 @@
+{
+  "name": "Kai — Lead SLA Escalation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-sla-escalation",
+        "options": {
+          "responseMode": "lastNode"
+        }
+      },
+      "name": "Escalation Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "lead-sla-escalation"
+    },
+    {
+      "parameters": {
+        "amount": 10,
+        "unit": "minutes"
+      },
+      "name": "Wait 10 Min SLA",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://YOUR_N8N_DOMAIN/webhook/lead-sla-check",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lead_id",
+              "value": "={{ $('Escalation Trigger').item.json.body.lead_id || $('Escalation Trigger').item.json.lead_id }}"
+            }
+          ]
+        }
+      },
+      "name": "Check If Responded",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "sla-check",
+              "leftValue": "={{ $json.responded }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      },
+      "name": "Still No Response?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [930, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=🚨 **KAI — SLA BREACH**\n\nLead {{ $('Escalation Trigger').item.json.body.lead_id || $('Escalation Trigger').item.json.lead_id }} has been waiting **10+ minutes** with no response.\n\nEstimated loss: $100-200 repair\n\n⚡ Action required NOW\n\nReply SEND to send the draft, or handle manually.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Escalation Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1160, 200],
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Escalation Trigger": {
+      "main": [
+        [{ "node": "Wait 10 Min SLA", "type": "main", "index": 0 }]
+      ]
+    },
+    "Wait 10 Min SLA": {
+      "main": [
+        [{ "node": "Check If Responded", "type": "main", "index": 0 }]
+      ]
+    },
+    "Check If Responded": {
+      "main": [
+        [{ "node": "Still No Response?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Still No Response?": {
+      "main": [
+        [{ "node": "Escalation Alert", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    { "name": "kai" },
+    { "name": "lead-sla" },
+    { "name": "escalation" }
+  ]
+}

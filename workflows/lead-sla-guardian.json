@@ -1,0 +1,155 @@
+{
+  "name": "Kai — Lead SLA Guardian",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-sla-guardian",
+        "options": {
+          "responseMode": "responseNode"
+        }
+      },
+      "name": "New Lead Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "lead-sla-guardian"
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $input.first().json.body || $input.first().json;\nconst now = new Date();\nreturn [{\n  json: {\n    lead_id: lead.id || lead.lead_id || `lead_${now.getTime()}`,\n    name: lead.name || lead.contact_name || lead.firstName || 'Unknown',\n    phone: lead.phone || lead.mobile || '',\n    email: lead.email || '',\n    source: lead.source || lead.utm_source || 'direct',\n    device: lead.device || lead.subject || '',\n    message: lead.message || lead.description || lead.notes || '',\n    received_at: now.toISOString(),\n    sla_deadline: new Date(now.getTime() + 10 * 60 * 1000).toISOString()\n  }\n}];"
+      },
+      "name": "Normalize Lead Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-20250514",
+        "messages": {
+          "values": [
+            {
+              "content": "=You are Kai, the Executive Chief of Staff for Techy Miramar, an electronics repair shop in Miramar, Florida.\n\nA new lead just came in. Draft a short, friendly, professional SMS response (under 160 chars if possible, max 300 chars). \n\nRules:\n- Acknowledge their device issue specifically if mentioned\n- Include shop name\n- Be warm but not salesy\n- Include a call to action (bring it in, call back, or reply)\n- Do NOT mention pricing\n- Do NOT promise timeframes you can't keep\n\nLead details:\nName: {{ $json.name }}\nDevice: {{ $json.device }}\nMessage: {{ $json.message }}\nSource: {{ $json.source }}\n\nRespond with ONLY the SMS text, nothing else."
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 200,
+          "temperature": 0.3
+        }
+      },
+      "name": "Draft Response (Claude)",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [700, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=🦊 **KAI — LEAD SLA ALERT**\n\n⏱ SLA: 10 minutes\n📥 Lead: {{ $('Normalize Lead Data').item.json.name }}\n📱 Phone: {{ $('Normalize Lead Data').item.json.phone }}\n📧 Email: {{ $('Normalize Lead Data').item.json.email }}\n🔧 Device: {{ $('Normalize Lead Data').item.json.device }}\n💬 Message: {{ $('Normalize Lead Data').item.json.message }}\n📍 Source: {{ $('Normalize Lead Data').item.json.source }}\n\n**Draft response:**\n{{ $json.text || $json.message?.content || $json.choices?.[0]?.message?.content || 'Draft generation failed' }}\n\n⏰ Deadline: {{ $('Normalize Lead Data').item.json.sla_deadline }}\n\n✅ Reply SEND to send as-is\n✏️ Reply with edited text to send custom\n❌ Reply SKIP to ignore",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Ping Shuki (Telegram)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [930, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "intervention_id",
+              "value": "=int_{{ Date.now() }}"
+            },
+            {
+              "name": "trigger_id",
+              "value": "lead_sla_breach"
+            },
+            {
+              "name": "autonomy_level",
+              "value": "1"
+            },
+            {
+              "name": "action_taken",
+              "value": "drafted_reply_and_pinged"
+            },
+            {
+              "name": "ts",
+              "value": "={{ new Date().toISOString() }}"
+            },
+            {
+              "name": "lead_id",
+              "value": "={{ $('Normalize Lead Data').item.json.lead_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Log Intervention",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1160, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"status\":\"ok\",\"lead_id\":\"{{ $('Normalize Lead Data').item.json.lead_id }}\",\"sla_deadline\":\"{{ $('Normalize Lead Data').item.json.sla_deadline }}\"}"
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1380, 300]
+    }
+  ],
+  "connections": {
+    "New Lead Webhook": {
+      "main": [
+        [{ "node": "Normalize Lead Data", "type": "main", "index": 0 }]
+      ]
+    },
+    "Normalize Lead Data": {
+      "main": [
+        [{ "node": "Draft Response (Claude)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Draft Response (Claude)": {
+      "main": [
+        [{ "node": "Ping Shuki (Telegram)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Ping Shuki (Telegram)": {
+      "main": [
+        [{ "node": "Log Intervention", "type": "main", "index": 0 }]
+      ]
+    },
+    "Log Intervention": {
+      "main": [
+        [{ "node": "Respond to Webhook", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    { "name": "kai" },
+    { "name": "lead-sla" },
+    { "name": "proactive" }
+  ]
+}

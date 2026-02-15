@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenClaw Intervention",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "ts": { "type": "string", "format": "date-time" },
+    "trigger_id": { "type": "string" },
+    "horizon": { "type": "integer", "minimum": 0, "maximum": 4 },
+    "predicted_cost_if_ignored": {
+      "type": "object",
+      "properties": {
+        "usd": { "type": "number" },
+        "reason": { "type": "string" }
+      }
+    },
+    "intervention_cost": {
+      "type": "object",
+      "properties": {
+        "usd": { "type": "number" },
+        "tokens": { "type": "integer" },
+        "reason": { "type": "string" }
+      }
+    },
+    "autonomy_level": { "type": "integer", "minimum": 0, "maximum": 3, "description": "0=observe 1=suggest 2=draft 3=execute" },
+    "action_taken": { "type": "string" },
+    "user_response": { "type": "string", "enum": ["accepted", "rejected", "modified", "ignored", "annoyed", "pending"] },
+    "trust_delta": { "type": "number" },
+    "focus_mode_active": { "type": "boolean" }
+  },
+  "required": ["id", "ts", "trigger_id", "autonomy_level", "action_taken"]
+}

@@ -1,0 +1,95 @@
+{
+  "_comment": "IMMUTABLE KERNEL — This file must NEVER be modified by any agent. Changes require manual user edit only.",
+  "version": "1.0.0",
+  "kill_switch": {
+    "enabled": false,
+    "mechanism": "file_flag at .openclaw/KILL relative to workspace root",
+    "path_resolution": "Use OPENCLAW_WORKSPACE env var or default to process working directory",
+    "description": "If .openclaw/KILL exists, all agent activity halts immediately"
+  },
+  "zero_standing_privileges": true,
+  "hitl_triggers": [
+    "external_communication_to_new_domain",
+    "file_deletion_outside_workspace",
+    "credential_access",
+    "payment_or_financial_action",
+    "deployment_to_production",
+    "modification_of_kernel_zone_files"
+  ],
+  "tool_boundaries": {
+    "ceo_agent": {
+      "allowed": ["plan", "delegate", "read", "todo_write", "search"],
+      "forbidden": ["edit", "write", "bash_destructive", "spawn_persistent"],
+      "note": "Phase 2+ only. See phase_overrides for Phase 0."
+    },
+    "worker_agent": {
+      "allowed": ["edit", "write", "bash", "read"],
+      "forbidden": ["delegate", "spawn", "modify_governance"]
+    },
+    "reviewer_agent": {
+      "allowed": ["read", "analyze", "comment"],
+      "forbidden": ["edit", "write", "bash"]
+    }
+  },
+  "phase_overrides": {
+    "phase_0": {
+      "description": "Single-agent mode. No workers available. Agent operates with expanded permissions under full audit logging.",
+      "single_agent": {
+        "allowed": ["plan", "read", "write", "edit", "bash", "search", "todo_write"],
+        "forbidden": ["bash_destructive", "spawn", "modify_governance"],
+        "hitl_required": ["file_deletion", "credential_update", "production_deployment", "external_communication_new_domain"],
+        "audit": "ALL tool calls logged regardless of risk level"
+      },
+      "expires_on": "phase_2_activation"
+    }
+  },
+  "mutation_zones": {
+    "kernel": {
+      "files": ["schemas/governance.json", "permissions.json", "kernel/POLICY.md"],
+      "mutable_by_agent": false,
+      "mutable_by_user": true
+    },
+    "identity": {
+      "files": ["docs/SOUL.md", "docs/MEMORY.md#north-star", "docs/AGENTS.md"],
+      "mutable_by_agent": false,
+      "mutable_by_user": true,
+      "note": "Agent may propose changes but user must approve. MEMORY.md North Star section is identity-protected. AGENTS.md agent topology changes require user approval."
+    },
+    "skill": {
+      "files": ["docs/MEMORY.md#beliefs", "docs/MEMORY.md#skills", "docs/MEMORY.md#episodes", "docs/MEMORY.md#lead-sources", "proactive/triggers.yaml", "docs/EVOLVE.md", "docs/INTELLECT.md"],
+      "mutable_by_agent": true,
+      "requires_irb_score": 0.9
+    },
+    "knowledge": {
+      "files": ["knowledge/principles.json", "knowledge/heuristics.json", "knowledge/books/*"],
+      "mutable_by_agent": true,
+      "requires_irb_score": 0.7,
+      "note": "Integration to principles requires weekly review gate"
+    }
+  },
+  "circuit_breakers": {
+    "max_tool_calls_per_minute": 30,
+    "max_tokens_per_hour": 100000,
+    "max_usd_per_day": 5.00,
+    "max_failed_actions_before_pause": 3,
+    "on_pause": {
+      "action": "alert_user_and_wait",
+      "alert_channel": "telegram",
+      "alert_message": "Kai paused after 3 consecutive failures. Most recent error: {last_error}. Reply RESUME to restart.",
+      "auto_resume_after_hours": 2,
+      "auto_resume_throttle": 0.5,
+      "note": "See docs/FAILSAFE.md for full recovery protocol"
+    }
+  },
+  "audit": {
+    "log_all_tool_calls": true,
+    "log_all_interventions": true,
+    "log_path": ".openclaw/workspace/audit.jsonl",
+    "path_note": "Relative to OPENCLAW_WORKSPACE root",
+    "retention_days": 90,
+    "immutable_hash": null,
+    "hash_algorithm": "sha256",
+    "hash_check_on_startup": true,
+    "note": "On first run, compute sha256 of this file and store in immutable_hash. On subsequent runs, orchestration layer verifies hash before executing any agent activity. This check runs in code, not in the LLM."
+  }
+}

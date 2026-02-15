@@ -1,0 +1,77 @@
+{
+  "version": "1.0.0",
+  "queue": [
+    {
+      "book_id": "high_output_management",
+      "title": "High Output Management",
+      "author": "Andrew Grove",
+      "domain": "execution",
+      "strategic_gap_score": 0.88,
+      "reason": "Execution leverage — directly maps to technician throughput bottleneck and automation ROI",
+      "status": "pending"
+    },
+    {
+      "book_id": "the_goal",
+      "title": "The Goal",
+      "author": "Eliyahu Goldratt",
+      "domain": "operations",
+      "strategic_gap_score": 0.85,
+      "reason": "Constraint theory — identifies bottlenecks in repair workflow and SaaS pipeline",
+      "status": "pending"
+    },
+    {
+      "book_id": "good_strategy_bad_strategy",
+      "title": "Good Strategy Bad Strategy",
+      "author": "Richard Rumelt",
+      "domain": "strategy",
+      "strategic_gap_score": 0.78,
+      "reason": "Prevents spreading too thin across repair + 4 SaaS products",
+      "status": "pending"
+    },
+    {
+      "book_id": "thinking_in_bets",
+      "title": "Thinking in Bets",
+      "author": "Annie Duke",
+      "domain": "strategy",
+      "strategic_gap_score": 0.72,
+      "reason": "Decision quality under uncertainty — applies to parts sourcing gambles and SaaS bets",
+      "status": "pending"
+    },
+    {
+      "book_id": "influence",
+      "title": "Influence: The Psychology of Persuasion",
+      "author": "Robert Cialdini",
+      "domain": "marketing",
+      "strategic_gap_score": 0.70,
+      "reason": "Review response strategy, lead conversion, customer retention psychology",
+      "status": "pending"
+    },
+    {
+      "book_id": "deep_work",
+      "title": "Deep Work",
+      "author": "Cal Newport",
+      "domain": "execution",
+      "strategic_gap_score": 0.65,
+      "reason": "Flow protection modeling — informs focus window design",
+      "status": "pending"
+    },
+    {
+      "book_id": "psychology_of_money",
+      "title": "The Psychology of Money",
+      "author": "Morgan Housel",
+      "domain": "finance",
+      "strategic_gap_score": 0.60,
+      "reason": "Financial decision framing for $250k target",
+      "status": "pending"
+    },
+    {
+      "book_id": "principles",
+      "title": "Principles",
+      "author": "Ray Dalio",
+      "domain": "leadership",
+      "strategic_gap_score": 0.58,
+      "reason": "Systematic decision-making and radical transparency model",
+      "status": "pending"
+    }
+  ]
+}

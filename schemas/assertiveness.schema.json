@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenClaw Assertiveness Calibration",
+  "type": "object",
+  "properties": {
+    "current_level": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 5,
+      "default": 3,
+      "description": "1=Passive(disabled) 2=Suggestive 3=Direct 4=Challenging 5=Hard Veto+Escalation"
+    },
+    "floor": { "type": "integer", "const": 2, "description": "Never drops below 2" },
+    "ceiling": { "type": "integer", "default": 4, "description": "5 requires manual approval" },
+    "last_calibrated": { "type": "string", "format": "date" },
+    "calibration_interval_days": { "type": "integer", "default": 30 },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "suggestion_accept_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "veto_accept_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "tone_down_signals": { "type": "integer", "minimum": 0 },
+        "ignored_interventions": { "type": "integer", "minimum": 0 },
+        "total_suggestions": { "type": "integer", "minimum": 0 },
+        "total_vetoes": { "type": "integer", "minimum": 0 },
+        "weighted_accept_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Computed: (suggestion_accept_rate × 0.6) + (veto_accept_rate × 0.4). Vetoes weigh more for discipline."
+        }
+      }
+    },
+    "update_rule": {
+      "type": "object",
+      "properties": {
+        "promote_if": {
+          "type": "string",
+          "default": "accept_rate > 0.75 AND tone_down_signals == 0"
+        },
+        "demote_if": {
+          "type": "string",
+          "default": "tone_down_signal OR accept_rate < 0.50"
+        },
+        "recently_integrated_principle": {
+          "type": "boolean",
+          "description": "If true (within 14 days of integration), reduce assertiveness volatility"
+        }
+      }
+    },
+    "behavior_by_level": {
+      "type": "object",
+      "properties": {
+        "2": { "type": "string", "const": "Suggestive: proposes alternatives gently, defers to user decisions" },
+        "3": { "type": "string", "const": "Direct: states recommendations clearly, explains trade-offs, pushes back once" },
+        "4": { "type": "string", "const": "Challenging: actively challenges weak decisions, demands evidence, pushes back twice" },
+        "5": { "type": "string", "const": "Hard Veto: blocks low-ROI actions, escalates, requires justification to proceed" }
+      }
+    }
+  },
+  "required": ["current_level", "metrics"]
+}

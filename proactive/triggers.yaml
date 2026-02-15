@@ -1,0 +1,200 @@
+trust_ramp:
+  current_level: 1
+  promotion:
+    L1_to_L2:
+      required_accepted: 15
+      min_days: 30
+    L2_to_L3:
+      required_accepted: 30
+      max_annoyed_events: 0
+  demotion:
+    on_annoyed: drop_one_level
+    on_high_risk_mistake: drop_to_L1
+
+focus_protection:
+  high_energy_windows:
+    - start: "09:00"
+      end: "12:00"
+      suppress_except: [ci_failure, security_alert, lead_sla_breach]
+    - start: "20:00"
+      end: "23:00"
+      suppress_except: [ci_failure, lead_sla_breach]
+  detection:
+    commits_per_hour_threshold: 3
+    slack_response_latency_under_minutes: 5
+
+triggers:
+  - id: lead_sla_breach
+    description: Respond to new lead within 10 minutes
+    signal: webhook.lead.created
+    signal_sources:
+      - repairdesk.ticket.created
+      - hubspot.contact.created
+      - website.form.submitted
+    signal_note: "All sources normalize to the same payload via lead-sla-guardian workflow"
+    condition:
+      no_response_minutes: 10
+    action_plan:
+      - draft_response
+      - notify_user_with_draft
+    mode: suggest_only
+    throttle:
+      max_per_hour: 10
+      cooldown_minutes: 5
+    overflow:
+      on_queue_full: log_and_alert
+      queue_max: 20
+      alert_message: "{count} leads queued — marketing blast? Check manually."
+    risk: low
+    horizon: 1
+    cost_gate:
+      max_tokens: 2000
+      max_usd: 0.05
+
+  - id: lead_re_escalation
+    description: Re-escalate if Shuki hasn't responded to lead ping
+    signal: cron
+    schedule: "*/20 * * * *"
+    condition:
+      pending_interventions_older_than_minutes: 20
+      max_re_escalations: 2
+    action_plan:
+      - check_pending_lead_interventions
+      - send_re_escalation_ping
+    mode: suggest_only
+    throttle:
+      max_per_hour: 3
+      cooldown_minutes: 20
+    risk: low
+    horizon: 1
+    cost_gate:
+      max_tokens: 500
+      max_usd: 0.01
+
+  - id: ci_failure_triage
+    description: Auto-triage CI failures and draft fix
+    signal: github.action.fail
+    condition:
+      branch_pattern: "main|develop"
+    action_plan:
+      - ingest_logs
+      - cross_ref_episodic_memory
+      - draft_fix_pr
+      - notify_user_with_analysis
+    mode: draft
+    throttle:
+      max_per_hour: 2
+      cooldown_minutes: 30
+    risk: medium
+    horizon: 1
+    cost_gate:
+      max_tokens: 5000
+      max_usd: 0.15
+
+  - id: morning_brief
+    description: Daily strategic briefing
+    signal: cron
+    schedule: "0 7 * * *"
+    action_plan:
+      - scan_github_issues
+      - check_calendar
+      - check_repairdesk_queue
+      - summarize_3_priorities
+    degraded_behavior: "If any data source is unavailable, skip that section and note it"
+    mode: suggest_only
+    throttle:
+      max_per_hour: 1
+    risk: low
+    horizon: 1
+    cost_gate:
+      max_tokens: 3000
+      max_usd: 0.08
+
+  - id: workspace_health
+    description: Hourly infrastructure health check
+    signal: cron
+    schedule: "0 * * * *"
+    action_plan:
+      - check_build_status
+      - check_disk_usage
+      - check_gateway_process
+      - check_undelivered_notifications
+    mode: observe
+    log_only: true
+    note: "Observe mode = log findings only, no mutations. Archiving moved to a separate maintenance trigger."
+    throttle:
+      max_per_hour: 1
+    risk: low
+    horizon: 0
+    cost_gate:
+      max_tokens: 500
+      max_usd: 0.01
+
+  - id: log_maintenance
+    description: Archive old logs and clean temp files
+    signal: cron
+    schedule: "0 3 * * 0"
+    action_plan:
+      - archive_logs_older_than_30_days
+      - clean_stale_checkpoints
+      - clean_undelivered_if_processed
+    mode: draft
+    note: "Runs weekly at 3 AM Sunday. Draft mode = proposes archival, does not auto-delete."
+    throttle:
+      max_per_hour: 1
+    risk: low
+    horizon: 0
+    cost_gate:
+      max_tokens: 500
+      max_usd: 0.01
+
+  - id: review_response_needed
+    description: New Google review needs response within 2 hours
+    signal: reviewguard.review.new
+    condition:
+      rating_lte: 3
+      no_response_minutes: 60
+    action_plan:
+      - analyze_sentiment
+      - draft_response
+      - notify_user_with_draft
+    mode: draft
+    throttle:
+      max_per_hour: 2
+      cooldown_minutes: 30
+    risk: low
+    horizon: 1
+    cost_gate:
+      max_tokens: 1500
+      max_usd: 0.04
+
+  - id: strategic_drift_flag
+    description: Detect when daily actions deviate from North Star
+    signal: cron
+    schedule: "0 20 * * 5"
+    action_plan:
+      - compute_drift_score
+      - if_drift_high_initiate_sparring
+    mode: suggest_only
+    risk: low
+    horizon: 3
+    cost_gate:
+      max_tokens: 4000
+      max_usd: 0.10
+
+cost_budgets:
+  hourly_max_usd: 0.50
+  daily_max_usd: 5.00
+  per_trigger_max_usd: 0.20
+  routing:
+    classification: cheap
+    summarization: cheap
+    code_review: strong
+    executive_decisions: strong
+    drafts: medium
+
+decision_gate: |
+  Only execute proactive step if:
+  ExpectedFutureCost > InterventionCost x (1 + AnnoyanceRisk)
+  Where AnnoyanceRisk = 0.5 during focus hours, 0.1 otherwise
+  See docs/COST.md for Phase 0 ExpectedFutureCost lookup table.

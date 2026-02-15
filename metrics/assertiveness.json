@@ -1,0 +1,16 @@
+{
+  "current_level": 3,
+  "floor": 2,
+  "ceiling": 4,
+  "last_calibrated": "2025-08-19",
+  "calibration_interval_days": 30,
+  "metrics": {
+    "suggestion_accept_rate": 0,
+    "veto_accept_rate": 0,
+    "tone_down_signals": 0,
+    "ignored_interventions": 0,
+    "total_suggestions": 0,
+    "total_vetoes": 0
+  },
+  "recently_integrated_principle": false
+}
