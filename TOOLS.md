@@ -38,3 +38,8 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 ---
 
 Add whatever helps you do your job. This is your cheat sheet.
+
+### n8n
+- Instance: https://n8n.srv1155599.hstgr.cloud
+- API access: via N8N_API_KEY env var (JWT, expires ~Jan 10 2026 — refresh if needed)
+- Access: REST API (curl), no browser needed
