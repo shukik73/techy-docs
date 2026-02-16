@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "skills": {
+    "n8n-workflow-automation": {
+      "version": "1.0.0",
+      "installedAt": 1771166716768
+    },
+    "yc-cold-outreach": {
+      "version": "1.0.1",
+      "installedAt": 1771166718801
+    },
+    "landing-page": {
+      "version": "1.0.0",
+      "installedAt": 1771166729575
+    },
+    "seo": {
+      "version": "1.0.1",
+      "installedAt": 1771166739731
+    }
+  }
+}
