@@ -5,7 +5,7 @@
 **Priority:** MEDIUM
 **Created:** 2026-02-16
 **Deadline:** 2026-02-16
-**Status:** pending
+**Status:** blocked
 
 ## Objective
 Audit all 50 n8n workflows on `https://n8n.srv1155599.hstgr.cloud`. Document what each does, which are active, which are broken, and which should be activated or deleted.
