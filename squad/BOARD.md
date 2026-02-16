@@ -7,7 +7,14 @@
 _None yet._
 
 ## Queue (Inbox)
-_None yet._
+| # | Task | Assignee | Priority | Deadline |
+|---|------|----------|----------|----------|
+| 1 | Iron Secretary Security Audit & Fix Plan | Jay | CRITICAL | 2026-02-16 |
+| 2 | Full Codebase Scan — All Repos | Jay | HIGH | 2026-02-16 |
+| 3 | Scout Agent Deployment Prep | Jay | MEDIUM | 2026-02-16 |
+| 4 | n8n Workflow Audit | Jay | MEDIUM | 2026-02-16 |
 
 ## Recently Completed
-_None yet._
+| Task | Assignee | Completed |
+|------|----------|-----------|
+| Read Config Files & Report In | Jay | 2026-02-16 |
