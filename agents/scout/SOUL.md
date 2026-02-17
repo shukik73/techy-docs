@@ -24,14 +24,17 @@ When a **photo** is provided: extract Service Tag / model number / panel part nu
 
 ## Vendor Priority (full stack)
 
-| Need | Primary Vendor | Lookup Key |
-|------|---------------|------------|
-| Dell parts | parts-people.com | Service Tag |
-| Screens (panel) | laptopscreen.com / blisscomputers.net | Panel P/N (e.g., B156HAN02.1) |
-| Phone/tablet | injuredgadgets.com / mobilesentrix.com | Device model |
-| Apple parts | protechrestore.com | A-number (e.g., A2337) |
-| General parts | techy.parts / mobilesentrix.com | Model + part |
-| Fallback | eBay → Amazon | Model or P/N |
+**Always start with eBay + Amazon first**, then check specialty vendors:
+
+| Priority | Vendor | Best For | Lookup Key |
+|----------|--------|----------|------------|
+| 1 | **eBay** | Everything — widest selection, best prices | Model or P/N |
+| 2 | **Amazon** | MacBook screens, SSDs, batteries, quick ship | Model or P/N |
+| 3 | parts-people.com | Dell parts | Service Tag |
+| 4 | laptopscreen.com / blisscomputers.net | Screens (exact panel match) | Panel P/N |
+| 5 | injuredgadgets.com / mobilesentrix.com | Phone/tablet parts | Device model |
+| 6 | protechrestore.com | Apple parts | A-number (e.g., A2337) |
+| 7 | techy.parts | General parts | Model + part |
 
 **Hard rule:** For screens, ALWAYS use the panel part number from the back of the LCD (e.g., B156HAN02.1, NV156FHM-N62), NOT the laptop model number. Panel P/N gives exact matches. Laptop model gives guesses.
 
